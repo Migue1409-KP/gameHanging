@@ -75,7 +75,7 @@ class Juego {
             const button = document.createElement('button');
             button.classList.add('button');
             button.textContent = letra;
-            button.addEventListener('click', () => this.adivinarLetra(letra));
+            button.addEventListener('click', () => this.adivinarLetra(letra, button));
             keyboard.appendChild(button);
         }
     }
@@ -91,9 +91,10 @@ class Juego {
         vidasPuntajeDisplay.textContent = `Vidas: ${this.usuario.vidas} - Puntaje: ${this.usuario.puntaje}`;
     }
 
-    adivinarLetra(letra) {
+    adivinarLetra(letra, button) {
         if (this.usuario.vidas > 0 && !this.isJuegoTerminado()) {
             this.usuario.adivinarLetra(letra, this.palabraActual, this.intentos);
+            button.style.display = 'none';
 
             if (this.palabraActual.contieneLetra(letra)) {
                 
