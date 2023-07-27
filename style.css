@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#word-display, #guessed-letters {
+    margin: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.button {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#hangman {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    border: 1px solid #000;
+    background-color: #f1f1f1;
+}
