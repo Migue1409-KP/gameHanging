@@ -50,6 +50,8 @@ class Juego {
         this.maxIntentos = 6;
         this.palabraActual = this.obtenerPalabraAleatoria();
         this.mostrarVidasPuntaje();
+        this.mensaje = document.getElementById('message');
+        this.mensaje.style.display = 'none';
     }
 
     obtenerPalabraAleatoria() {
@@ -102,7 +104,7 @@ class Juego {
                 this.actualizarVidasPuntaje();
 
                 if (!this.palabraActual.mostrarPalabraAdivinada(this.usuario.letrasAdivinadas).includes('_')) {
-                    this.mostrarMensaje('¡Ganaste! 😃');
+                    this.mostrarMensaje('Acertaste la palabra! 😃');
                     this.usuario.puntaje += 50;
                     this.actualizarVidasPuntaje();
                     this.palabras.splice(this.palabras.indexOf(this.palabraActual.palabra),1);
@@ -112,11 +114,11 @@ class Juego {
                 this.intentos++;
                 this.actualizarAhorcado();
                 if (this.intentos >= this.maxIntentos) {
-                    this.mostrarMensaje('Perdiste. La palabra era: ' + this.palabraActual.palabra);
+                    this.mostrarMensaje('Perdiste 😔. La palabra era: ' + this.palabraActual.palabra);
                     this.usuario.vidas--;
                     this.actualizarVidasPuntaje();
                     if(this.usuario.vidas == 0){
-                        this.mostrarMensaje('Perdiste');
+                        this.mostrarMensaje('Game Over 🎮❌, te has quedado sin vidas');
                         return;
                     }
                     this.nuevaPalabra();
@@ -130,10 +132,13 @@ class Juego {
     }
 
     mostrarMensaje(mensaje) {
-        const wordDisplay = document.getElementById('word-display');
-        wordDisplay.textContent = mensaje;
+        this.mensaje.textContent = mensaje;
+        this.mensaje.style.display = 'block';
         const keyboard = document.getElementById('keyboard');
         keyboard.innerHTML = '';
+        setTimeout(() => {
+            this.mensaje.style.display = 'none';
+        }, 2000);
     }
 
     actualizarAhorcado() {
