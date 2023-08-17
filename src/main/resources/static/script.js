@@ -43,20 +43,25 @@ class Usuario {
 }
 
 class Juego {
-    constructor(palabras) {
-        this.palabras = palabras;
+    constructor() {
         this.usuario = new Usuario();
         this.intentos = 0;
         this.maxIntentos = 6;
-        this.palabraActual = this.obtenerPalabraAleatoria();
+        this.palabraActual = null;
         this.mostrarVidasPuntaje();
         this.mensaje = document.getElementById('message');
         this.mensaje.style.display = 'none';
     }
 
-    obtenerPalabraAleatoria() {
-        const indiceAleatorio = Math.floor(Math.random() * this.palabras.length);
-        return new Palabra(this.palabras[indiceAleatorio]);
+    obtenerPalabraAleatoriaInicio() {
+        fetch('/api/palabra/nuevapalabra')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.palabra);
+            this.palabraActual = new Palabra(data.palabra);
+            this.comenzarJuego();
+        })
+        .catch(error => console.error('Error al obtener una nueva palabra:', error));
     }
 
     iniciarJuego() {
@@ -107,7 +112,6 @@ class Juego {
                     this.mostrarMensaje('Acertaste la palabra! 😃');
                     this.usuario.puntaje += 50;
                     this.actualizarVidasPuntaje();
-                    this.palabras.splice(this.palabras.indexOf(this.palabraActual.palabra),1);
                     this.nuevaPalabra();
                 }
             } else {
@@ -143,20 +147,33 @@ class Juego {
 
     actualizarAhorcado() {
         const hangman = document.getElementById('hangman');
-        hangman.style.backgroundImage = `url('img/hangman_${this.intentos}.png')`;
+        hangman.style.backgroundImage = `url('images/hangman_${this.intentos}.png')`;
         hangman.style.backgroundSize = `cover`;
     }
 
     nuevaPalabra() {
-        this.palabraActual = this.obtenerPalabraAleatoria();
-        this.intentos = 0;
-        this.usuario.letrasAdivinadas = [];
-        this.mostrarPalabra();
-        this.actualizarAhorcado();
-        this.crearTeclado();
+        fetch('/api/palabra/nuevapalabra')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.palabra);
+            this.palabraActual = new Palabra(data.palabra);
+            this.intentos = 0;
+            this.usuario.letrasAdivinadas = [];
+            this.mostrarPalabra();
+            this.actualizarAhorcado();
+            this.crearTeclado();
+        })
+        .catch(error => console.error('Error al obtener una nueva palabra:', error));
+    }
+
+    comenzarJuego() {
+        this.iniciarJuego();
     }
 }
 
-const palabras =  ["gato", "perro", "casa", "arbol", "cielo", "nube", "sol", "jugar", "amigo", "familia", "mesa", "silla", "mano", "pie", "nariz", "ojo", "oreja", "boca", "diente", "flor", "libro", "lapiz", "escuela", "estudiante", "profesor", "computadora", "telefono", "ventana", "puerta", "comida", "bebida", "pizza", "helado", "dulce", "hamburguesa", "juego", "musica", "pelicula", "deporte", "futbol", "tenis", "nadar", "correr", "saltar", "dormir", "soñar", "estudiar", "trabajar", "viajar", "avion", "auto", "bicicleta", "tren", "barco", "espacio", "planeta", "luna", "sol", "montaña", "rio", "mar", "playa", "bosque", "desierto", "ciudad", "pais", "idioma", "arte", "pintura", "escultura", "musica", "bailar", "cantar", "feliz", "triste", "enfadado", "sorpresa", "miedo", "amor", "odio", "risa", "llanto", "rojo", "verde", "azul", "amarillo", "negro", "blanco", "gris", "alto", "bajo", "largo", "corto", "grande", "pequeño", "caliente", "frio", "rapido", "lento", "nuevo", "viejo", "bueno", "malo", "dificil", "facil", "alegre", "triste", "gracioso", "aburrido"];
-const juego = new Juego(palabras);
-juego.iniciarJuego();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const juego = new Juego();
+    juego.obtenerPalabraAleatoriaInicio();
+});
+
